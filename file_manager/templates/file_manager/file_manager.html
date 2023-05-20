@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager</title>
+    <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@latest/pace-theme-default.min. css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    // To be used in the file_manager.js file
+    var convertUrl = '{% url "convert" %}';
+    </script>
+    <script src="{% static '/js/file_manager.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/css/file_manager.css' %}">
+
+</head>
+<body>
+    <div id="map" style="position: absolute; top: 100px; right: 160px; width: 300px; height: 200px; z-index: 1000;"></div>
+
+    <div class="container">
+        <h1 class="mt-4">File Manager</h1>
+        <hr>
+        <a href="/" class="btn btn-secondary mb-3">Go to Homepage</a>
+        <h3>Upload a file</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        <hr>
+        <h3>File list</h3>
+        <form method="post" action="{% url 'delete_multiple' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger mb-3">Delete Selected</button>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="checkAll"></th>
+                        <th>File</th>
+                        <th>Uploaded</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td><input type="checkbox" name="selected_files" value="{{ file.id }}" data-filename="{{ file.file.url }}"></td>
+
+                        <td>{{ file.file.name|cut:"uploads/" }}</td>
+                        <td>{{ file.uploaded_at }}</td>
+                        <td>
+                            <a href="{% url 'download' file.id %}" class="btn btn-sm btn-primary">Download</a>
+                            <a href="{% url 'delete' file.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this file?');">Delete</a>
+                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#converterModal" data-fileid="{{ file.id }}">Convert</button>
+                            <a href="http://localhost:5173/index.html?file_id={{ file.id }}" class="btn btn-sm btn-info" target="_blank">View/Edit</a>
+                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#attributeModal" data-fileid="{{ file.id }}">View Attributes</button>
+
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No files have been uploaded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <!-- Converter Modal -->
+    <div class="modal fade" id="converterModal" tabindex="-1" role="dialog" aria-labelledby="converterModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="converterModalLabel">Convert File</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="converterForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="file_id" id="file_id">
+            <div class="form-group">
+                <label for="output_format">Output Format</label>
+                <select class="form-control" name="output_format" id="output_format">
+                <option value="shp">ESRI Shapefile</option>
+                <option value="kml">KML</option>
+                <option value="geojson">GeoJSON</option>
+                <option value="gml">GML</option>
+                <option value="wkt">WKT</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Convert</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+    </div>
+    <!-- End Converter Modal -->
+    <!-- Attribute Modal -->
+    <div class="modal fade" id="attributeModal" tabindex="-1" role="dialog" aria-labelledby="attributeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="attributeModalLabel">View Attributes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body scrollable-modal-body">
+                <table class="table table-bordered" id="attributesTable">
+                    <!-- Table will be filled in dynamically -->
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Attribute Modal -->
+    <script>
+        // Check/Uncheck all checkboxes on the table
+        document.getElementById('checkAll').addEventListener('click', function() {
+            var checkboxes = document.getElementsByName('selected_files');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+    </script>
+    <script src="{% static '/js/view_attributes.js' %}"></script>
+    <script src="{% static '/js/leafletpreview.js' %}"></script>
+</body>
+</html>
+

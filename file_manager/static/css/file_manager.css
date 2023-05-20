@@ -1,0 +1,39 @@
+.scrollable-modal-body {
+    max-height: calc(100vh - 210px);
+    max-width: calc(100% - 30px);
+    overflow: auto;
+    padding: 0px 20px 20px 20px; /* add buffer at the end and on the sides */
+}
+
+@media screen and (min-width: 768px) { 
+    .modal-dialog {
+        max-width: 90%;
+        width: auto;
+    }
+}
+
+#attributesTable {
+    font-size: 80%; /* Adjust the font size as needed */
+    border-collapse: collapse; /* Merge table borders */
+    overflow: auto; /* Enable scrolling */
+    width: 100%; /* Ensure table width spans the container */
+}
+
+#attributesTable th,
+#attributesTable td {
+    border-top: 1px solid #dee2e6; /* Add top border to table cells */
+    border-bottom: 1px solid #dee2e6; /* Add bottom border to table cells */
+    padding: 8px; /* Add padding to table cells for better spacing */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+#attributesTable th {
+    position: sticky;
+    top: 0;
+    background-color: #6b99f5; /* Apply lightly shaded grey color to column names */
+    z-index: 1; /* Ensure column names stay on top */
+}
+
+#attributesTable tr:nth-child(even) {
+    background-color: #f8f9fa; /* Apply lightly shaded grey color to every other row */
+}
