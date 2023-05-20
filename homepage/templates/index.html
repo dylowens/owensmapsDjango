@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static '/css/styles.css' %}">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-5">
+        <h1>Portfolio</h1>
+        <p class="lead">Python Applications</p>
+    </header>
+
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Projects</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <a href="/imagetotext" class="text-decoration-none">
+                    <div class="card">
+                        <img src="{% static 'imagetotext.png' %}" class="card-img-top" alt="Project 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Image to Text</h5>
+                            <p class="card-text">An app that extracts text from images.</p>
+                            <a href="/imagetotext" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Add the geojson_viewer app card -->
+            <!-- <div class="col-md-4">
+                <a href="/geojson/upload" class="text-decoration-none">
+                    <div class="card">
+                        <img src="{% static 'geojson_viewer.png' %}" class="card-img-top" alt="GeoJSON Viewer">
+                        <div class="card-body">
+                            <h5 class="card-title">GeoJSON Viewer</h5>
+                            <p class="card-text">An app to upload and view GeoJSON files.</p>
+                            <a href="/geojson/upload" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </a>
+            </div> -->
+            <!-- Add the esri_app/webmap app card -->
+            <!-- <div class="col-md-4">
+                <a href="/esri_app/webmap" class="text-decoration-none">
+                    <div class="card">
+                        <img src="{% static 'esri_app.png' %}" class="card-img-top" alt="ESRI Webmap">
+                        <div class="card-body">
+                            <h5 class="card-title">ESRI Webmap</h5>
+                            <p class="card-text">An app to display ESRI webmaps.</p>
+                            <a href="/esri_app/webmap" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </a>
+            </div> -->
+            <!-- Add the file_manager app card -->
+            <div class="col-md-4">
+                <a href="/file_manager" class="text-decoration-none">
+                    <div class="card">
+                        <img src="{% static 'GIS_File_Manager.png' %}" class="card-img-top" alt="File Manager">
+                        <div class="card-body">
+                            <h5 class="card-title">File Manager</h5>
+                            <p class="card-text">An app to upload, convert, and download GIS files.</p>
+                            <a href="/file_manager" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Add more projects as needed -->
+        </div>
+    </div>
+
+    <footer class="text-center py-3">
+        <p>&copy; Dylan Owens, All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
